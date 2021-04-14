@@ -44,7 +44,10 @@ function! DeleteTrailingWhitespace#IsAction() " {{
         return 1
     elseif l:action ==# 'abort'
         if ! v:cmdbang && DeleteTrailingWhitespace#HasTrailingWhitespace()
-            " Note: Defining a no-op BufWriteCmd only comes into effect on the next write, but does not affect the current one. Since we don't want to install such an autocmd across the board, the best we can do is throwing an exception to abort the write.
+            " Note: Defining a no-op BufWriteCmd only comes into effect on the
+            " next write, but does not affect the current one. Since we don't
+            " want to install such an autocmd across the board, the best we can
+            " do is throwing an exception to abort the write.
             throw 'DeleteTrailingWhitespace: Trailing whitespace found, aborting write (add ! to override, or :DeleteTrailingWhitespace to eradicate)'
         endif
     elseif l:action ==# 'ask'
