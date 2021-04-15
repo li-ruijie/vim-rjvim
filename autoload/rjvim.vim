@@ -137,25 +137,25 @@ function! rjvim#app_guitablabel() "{{
     let l:label = '['.v:lnum.':'.l:bnr.'] '.l:name.' '.l:label
     return l:label
 endfunction "}}
-" vimtweaks "{{{
+" mods "{{{
 if !(!has('gui_running') || (!has('win32') && !has('win64')))
-    let g:vimtweak_dll_path =
+    let g:mod_dll_path =
         \ expand('<sfile>:p:h:h') . '/dll/' . (has('win64') ?
-        \ 'vimtweak64.dll' : 'vimtweak32.dll')
-    function! rjvim#app_vimtweaksetalphadll(alpha) "{{{
-        call libcallnr(g:vimtweak_dll_path, "SetAlpha", 0+a:alpha)
+        \ 'mod64.dll' : 'mod32.dll')
+    function! rjvim#app_modsetalphadll(alpha) "{{{
+        call libcallnr(g:mod_dll_path, "SetAlpha", 0+a:alpha)
     endfunction "}}}
-    function! rjvim#app_vimtweakenablemaxdll() "{{{
-        call libcallnr(g:vimtweak_dll_path, "EnableMaximize", 1)
+    function! rjvim#app_modenablemaxdll() "{{{
+        call libcallnr(g:mod_dll_path, "EnableMaximize", 1)
     endfunction "}}}
-    function! rjvim#app_vimtweakdisablemaxdll() "{{{
-        call libcallnr(g:vimtweak_dll_path, "EnableMaximize", 0)
+    function! rjvim#app_moddisablemaxdll() "{{{
+        call libcallnr(g:mod_dll_path, "EnableMaximize", 0)
     endfunction "}}}
-    function! rjvim#app_vimtweakenablealwaystopdll() "{{{
-        call libcallnr(g:vimtweak_dll_path, "EnableTopMost" , 1)
+    function! rjvim#app_modenablealwaystopdll() "{{{
+        call libcallnr(g:mod_dll_path, "EnableTopMost" , 1)
     endfunction "}}}
-    function! rjvim#app_vimtweakdisablealwaystopdll() "{{{
-        call libcallnr(g:vimtweak_dll_path, "EnableTopMost" , 0)
+    function! rjvim#app_moddisablealwaystopdll() "{{{
+        call libcallnr(g:mod_dll_path, "EnableTopMost" , 0)
     endfunction "}}}
 endif "}}}
 
@@ -202,6 +202,14 @@ function! rjvim#sys_backupmkdir(targetdir) "{{
     if empty(glob(a:targetdir))
         call mkdir(a:targetdir, "p")
     endif
+endfunction "}}
+function! rjvim#sys_insertmute_on(motion) "{{
+    set eventignore+=InsertLeave,InsertEnter
+    return "\<C-o>" . a:motion
+endfunction "}}
+function! rjvim#sys_insertmute_off() "{{
+    set eventignore-=InsertLeave,InsertEnter
+    return "\<Ignore>"
 endfunction "}}
 function! rjvim#sys_performanceswitch(mode) "{{
     let g:performance_mode =
