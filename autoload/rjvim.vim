@@ -273,7 +273,7 @@ function! rjvim#sys_backupmkdir(targetdir) "{{
 endfunction "}}
 function! functions#sys_info() "{{
     function! IsWin()
-        map(['win16', 'win32', 'win64'], 'has(v:val)') ->max()
+        return map(['win16', 'win32', 'win64'], 'has(v:val)') ->max()
     endfunction
     let g:os =
         \ IsWin()      ? 'windows' :
