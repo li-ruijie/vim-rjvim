@@ -77,7 +77,20 @@ function! rjvim#app_colourssw_switchcolours(dir) "{{
     let &background = g:colourssw_current[1]
     redraw | echo g:colourssw_current
 endfunction "}}
-
+function! rjvim#app_conceal_automode(switch) "{{{
+    let l:switch = a:switch ==# 2 ? !a:switch : a:switch
+    if l:switch ==# 0
+        return
+    endif
+    if &l:conceallevel !=# 0
+        let l:conceallevel_init = &l:conceallevel
+        augroup insertmode_conceal
+            autocmd!
+            autocmd InsertEnter * let &l:conceallevel = 0
+            autocmd InsertLeave * let &l:conceallevel = l:conceallevel_init
+        augroup END
+    endif
+endfunction "}}}
 function! rjvim#app_fontsize(adjust) "{{
     if !exists('g:rjvim#defaultguifont')
         let g:rjvim#defaultguifont     = has('nvim') ? g:GuiFont : &g:guifont
@@ -138,7 +151,7 @@ function! rjvim#app_guitablabel() "{{
     return l:label
 endfunction "}}
 " mods "{{{
-if !(!has('gui_running') || (!has('win32') && !has('win64')))
+if g:os ==# 'Windows' && has('gui_running')
     let g:mod_dll_path =
         \ expand('<sfile>:p:h:h') . '/dll/' . (has('win64') ?
         \ 'mod64.dll' : 'mod32.dll')
@@ -159,10 +172,65 @@ if !(!has('gui_running') || (!has('win32') && !has('win64')))
     endfunction "}}}
 endif "}}}
 
+function! rjvim#ft_sh_init() "{{
+    function! Run()
+        set filetype=sh
+        set foldenable
+        set foldmethod=syntax
+        let g:is_bash         = 1
+        let g:sh_fold_enabled = 7
+        let g:sh_no_error     = 0
+    endfunction
+    augroup ftshinit "{{
+        autocmd!
+        autocmd FileType sh call Run()
+    augroup END "}}
+endfunction "}}
+function! rjvim#ft_templates() "{{
+    function! GetFF(file) "{{
+        let l:file =
+            \ expand(a:file)
+            \ ->fnameescape()
+            \ ->readblob()
+            \ ->string()
+            \ ->split('.\{2}\zs', ' ')
+        let l:fileindex  = 0
+        let l:cont       = 1
+        let l:filelen    = len(l:file)
+        let l:filelenbrk = l:filelen > 80 ? l:filelen / 2 : l:filelen
+        while l:cont ==# 1
+            let l:check = l:file[l:fileindex] ==# '0A'
+            if l:check || l:fileindex >=# l:filelenbrk
+                let l:cont = 0
+            else
+                let l:fileindex += 1
+            endif
+        endwhile
+        let l:fileformat =
+            \ l:file[l:fileindex - 1] ==# '0D' ?
+            \ 'dos' : 'unix'
+        return l:fileformat
+    endfunction "}}
+    function! GetTemplateFN(ext) "{{
+        return expand(g:templates_path)
+            \ . (g:os ==# 'Windows' ? '\' : '/')
+            \ . g:templates_prefix
+            \ . '.'
+            \ . expand(a:ext)
+    endfunction "}}
+    let l:template = GetTemplateFN('%:e')
+    if !filereadable(l:template)
+        return
+    endif
+    let l:insert = readfile(l:template)
+    call appendbufline(bufnr(), 0, l:insert)
+    let &l:fileformat = GetFF(l:template)
+endfunction "}}
+
 function! rjvim#fmt_autoformattoggle() "{{
     let l:formatoptionsoperator = strridx(&l:formatoptions, "a") > 0 ?
         \ '-' : '+'
-    :execute ':setlocal formatoptions' . l:formatoptionsoperator . '=a' |
+    execute ':setlocal formatoptions' . l:formatoptionsoperator . '=a' |
         \ echom 'autoformat'.l:formatoptionsoperator
 endfunction "}}
 function! rjvim#fmt_breakonperiod() "{{
@@ -203,6 +271,15 @@ function! rjvim#sys_backupmkdir(targetdir) "{{
         call mkdir(a:targetdir, "p")
     endif
 endfunction "}}
+function! rjvim#sys_detect_os() "{{
+    let g:os =
+        \ has("win64") || has("win32") || has("win16") ?
+        \ "Windows" : substitute(system('uname'), '\n', '', '')
+    let g:root = g:os ==# 'Windows' ?
+        \ filewritable('C:\Windows\System32') :
+        \ system('printf ''%s'' "$USER"') ==# 'root' ?
+        \ 1 : 0
+endfunction "}}
 function! rjvim#sys_insertmute_on(motion) "{{
     set eventignore+=InsertLeave,InsertEnter
     return "\<C-o>" . a:motion
@@ -212,11 +289,8 @@ function! rjvim#sys_insertmute_off() "{{
     return "\<Ignore>"
 endfunction "}}
 function! rjvim#sys_performanceswitch(mode) "{{
-    let g:performance_mode =
-        \ a:mode ==# 0 ? 0 :
-        \ a:mode ==# 1 ? 1 :
-        \ a:mode ==# 2 ? g:performance_mode ? 0 : 1 :
-        \ g:performance_mode
+    let g:performance_mode = a:mode ==# 2 ?
+        \ !g:performance_mode : a:mode
     if g:performance_mode
         set nocursorline
         if !has('nvim')
