@@ -151,7 +151,7 @@ function! rjvim#app_guitablabel() "{{
     return l:label
 endfunction "}}
 " mods "{{{
-if g:os ==# 'Windows' && has('gui_running')
+if g:os ==# 'windows' && has('gui_running')
     let g:mod_dll_path =
         \ expand('<sfile>:p:h:h') . '/dll/' . (has('win64') ?
         \ 'mod64.dll' : 'mod32.dll')
@@ -213,7 +213,7 @@ function! rjvim#ft_templates() "{{
     endfunction "}}
     function! GetTemplateFN(ext) "{{
         return expand(g:templates_path)
-            \ . (g:os ==# 'Windows' ? '\' : '/')
+            \ . (g:os ==# 'windows' ? '\' : '/')
             \ . g:templates_prefix
             \ . '.'
             \ . expand(a:ext)
@@ -271,11 +271,16 @@ function! rjvim#sys_backupmkdir(targetdir) "{{
         call mkdir(a:targetdir, "p")
     endif
 endfunction "}}
-function! rjvim#sys_detect_os() "{{
+function! functions#sys_info() "{{
+    function! IsWin()
+        map(['win16', 'win32', 'win64'], 'has(v:val)') ->max()
+    endfunction
     let g:os =
-        \ has("win64") || has("win32") || has("win16") ?
-        \ "Windows" : substitute(system('uname'), '\n', '', '')
-    let g:root = g:os ==# 'Windows' ?
+        \ IsWin()      ? 'windows' :
+        \ has('linux') ? 'linux'   :
+        \ 'unknown'
+    let g:root =
+        \ g:os ==# 'windows' ?
         \ filewritable('C:\Windows\System32') :
         \ system('printf ''%s'' "$USER"') ==# 'root' ?
         \ 1 : 0
