@@ -253,8 +253,6 @@ function! rjvim#fmt_formattext_long() "{{
 endfunction "}}
 
 function! rjvim#sys_backupenable() "{{
-    function! s:sys_backupmkdir(targetdir) "{{
-    endfunction "}}
     function! s:setupbackup()
         let l:filename  =
             \ expand('%')
