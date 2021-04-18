@@ -253,25 +253,34 @@ function! rjvim#fmt_formattext_long() "{{
 endfunction "}}
 
 function! rjvim#sys_backupenable() "{{
+    function! s:sys_backupmkdir(targetdir) "{{
+    endfunction "}}
+    function! s:setupbackup()
+        let l:filename  =
+            \ expand('%')
+            \ ->fnameescape()
+        let l:backupdir =
+            \ ('.vbak/' . l:filename)
+            \ ->fnameescape()
+        if empty(glob(l:backupdir))
+            call mkdir(a:targetdir, "p")
+        endif
+        let &l:backupdir = l:backupdir
+
+        let l:fileftime = getftime(l:filename)
+        let l:tformat = '%Y%m%d%H%M%S'
+        let &l:backupext = '.' . (l:fileftime ==# -1 ?
+            \ strftime("%Y%m%d%H%M%S") :
+            \ strftime(l:tformat, getftime(l:filename)))
+    endfunction
     setlocal undofile
     setlocal backup
-    function! s:setupbackup()
-        let l:backupdir = fnameescape('.file-backup/' . expand('%'))
-        call rjvim#sys_backupmkdir(l:backupdir)
-        let &l:backupdir = l:backupdir
-        let &l:backupext = '.' . strftime("%Y%m%d%H%M%S")
-    endfunction
     augroup enablebackupsprewrite "{{
         autocmd!
-        autocmd BufWritePre * call s:setupbackup()
+        autocmd BufWritePre * call <SID>setupbackup()
     augroup END "}}
 endfunction "}}
-function! rjvim#sys_backupmkdir(targetdir) "{{
-    if empty(glob(a:targetdir))
-        call mkdir(a:targetdir, "p")
-    endif
-endfunction "}}
-function! functions#sys_info() "{{
+function! rjvim#sys_info() "{{
     function! IsWin()
         return map(['win16', 'win32', 'win64'], 'has(v:val)') ->max()
     endfunction
@@ -284,6 +293,9 @@ function! functions#sys_info() "{{
         \ filewritable('C:\Windows\System32') :
         \ system('printf ''%s'' "$USER"') ==# 'root' ?
         \ 1 : 0
+    let g:dirsep =
+        \ g:os ==# 'windows' ?
+        \ '\' : '/'
 endfunction "}}
 function! rjvim#sys_insertmute_on(motion) "{{
     set eventignore+=InsertLeave,InsertEnter
