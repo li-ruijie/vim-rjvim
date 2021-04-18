@@ -261,7 +261,7 @@ function! rjvim#sys_backupenable() "{{
             \ ('.vbak/' . l:filename)
             \ ->fnameescape()
         if empty(glob(l:backupdir))
-            call mkdir(a:targetdir, "p")
+            call mkdir(l:backupdir, "p")
         endif
         let &l:backupdir = l:backupdir
 
