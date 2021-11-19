@@ -248,6 +248,7 @@ function! rjvim#fmt_formattext_long() " {{
     let &l:textwidth = 800000000
     silent! execute "normal! mTgwap\<CR>`T"
     silent! execute 's/\s\s\+/ /e'
+    silent! execute 's/\(\.\)\( \u\l\)/\1 \2/e'
     silent! execute "normal! ^:DeleteTrailingWhitespace\<CR>`T:delmarks T\<CR>"
     let &l:textwidth = s:origtextwidth
 endfunction " }}
