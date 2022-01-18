@@ -252,6 +252,14 @@ function! rjvim#fmt_formattext_long() " {{
     silent! execute "normal! ^:DeleteTrailingWhitespace\<CR>`T:delmarks T\<CR>"
     let &l:textwidth = s:origtextwidth
 endfunction " }}
+function! rjvim#fmt_formattext_isolated() "{{
+    silent! normal! mTO
+    silent! normal! jo
+    silent! normal! k
+    silent! call rjvim#fmt_formattext_short()
+    silent! normal! {dd}dd`T
+    silent! delmarks T
+endfunction "}}
 
 function! rjvim#sys_backupenable() " {{
     function! s:setupbackup()
