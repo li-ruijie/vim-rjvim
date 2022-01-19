@@ -230,8 +230,8 @@ endfunction " }}
 function! rjvim#fmt_autoformattoggle() " {{
     let l:formatoptionsoperator = strridx(&l:formatoptions, "a") > 0 ?
         \ '-' : '+'
-    execute ':setlocal formatoptions' . l:formatoptionsoperator . '=a' |
-        \ echom 'autoformat'.l:formatoptionsoperator
+    execute ":setlocal formatoptions" . l:formatoptionsoperator . "=a" |
+        \ echom "autoformat".l:formatoptionsoperator
 endfunction " }}
 function! rjvim#fmt_breakonperiod() " {{
     call rjvim#fmt_formattext_long()
@@ -252,14 +252,19 @@ function! rjvim#fmt_formattext_long() " {{
     silent! execute "normal! ^:DeleteTrailingWhitespace\<CR>`T:delmarks T\<CR>"
     let &l:textwidth = s:origtextwidth
 endfunction " }}
-function! rjvim#fmt_formattext_isolated() "{{
-    silent! normal! mTO
-    silent! normal! jo
-    silent! normal! k
-    silent! call rjvim#fmt_formattext_short()
-    silent! normal! {dd}dd`T
-    silent! delmarks T
-endfunction "}}
+function! rjvim#fmt_formattext_isolated() " {{
+    silent! execute "normal! mT"
+    call rjvim#fmt_insert_blank("updown")
+    call rjvim#fmt_formattext_short()
+    silent! execute "normal! {dd}dd`T:delmarks T\<CR>"
+endfunction " }}
+function! rjvim#fmt_insert_blank(mode) " {{
+    let l:insertexp =  a:mode =# 'up' ?
+        \ "O\<C-o>j" : a:mode =# 'down'
+        \ "o\<C-o>k" : a:mode =# 'updown'
+        \ "O\<C-o>j\<C-o>o\<C-o>k"
+    silent! execute "normal! mT" . l:insertexp . "\<C-o>`T\<C-o>:delmarks T\<CR>"
+endfunction " }}
 
 function! rjvim#sys_backupenable() " {{
     function! s:setupbackup()
