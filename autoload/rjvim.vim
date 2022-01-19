@@ -259,10 +259,10 @@ function! rjvim#fmt_formattext_isolated() " {{
     silent! execute "normal! {dd}dd`T:delmarks T\<CR>"
 endfunction " }}
 function! rjvim#fmt_insert_blank(mode) " {{
-    let l:insertexp =  a:mode =# 'up' ?
-        \ "O\<C-o>j" : a:mode =# 'down'
-        \ "o\<C-o>k" : a:mode =# 'updown'
-        \ "O\<C-o>j\<C-o>o\<C-o>k"
+    let l:insertexp =  a:mode ==# 'up'     ?
+        \ "O\<C-o>j" : a:mode ==# 'down'   ?
+        \ "o\<C-o>k" : a:mode ==# 'updown' ?
+        \ "O\<C-o>j\<C-o>o\<C-o>k" : ""
     silent! execute "normal! mT" . l:insertexp . "\<C-o>`T\<C-o>:delmarks T\<CR>"
 endfunction " }}
 
