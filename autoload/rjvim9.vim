@@ -263,6 +263,10 @@ enddef # }}
 # }}
 # Ft_templates {{
 export def Ft_templates() # {{
+    # Skip for special buffers (preview, help, quickfix, etc.)
+    if &l:buftype != ''
+        return
+    endif
     var template = GetTemplateFN('%:e')
     if !filereadable(template)
         return
