@@ -35,20 +35,15 @@ def Restore_links() # {{
     finally
         redir END
     endtry
-    var num_restored = 0
-    for line in split(listing, "\n")
-        var tokens = split(line)
-        # We're looking for lines like "String xxx cleared" in the
-        # output of the :highlight command.
-        if len(tokens) == 3 && tokens[1] == 'xxx' && tokens[2] == 'cleared'
-            var fromgroup = tokens[0]
-            var togroup = get(known_links, fromgroup, '')
-            if !empty(togroup)
-                execute 'hi link' fromgroup togroup
-                num_restored += 1
-            endif
-        endif
-    endfor
+    # We're looking for lines like "String xxx cleared" in the
+    # output of the :highlight command.
+    split(listing, "\n")
+        ->mapnew((_, line) => split(line))
+        ->filter((_, t) => len(t) == 3 && t[1] == 'xxx' && t[2] == 'cleared'
+            && !empty(get(known_links, t[0], '')))
+        ->foreach((_, t) => {
+            execute 'hi link' t[0] known_links[t[0]]
+        })
 enddef # }}
 def AccurateColorscheme(colo_name: string) # {{
     Find_links()
