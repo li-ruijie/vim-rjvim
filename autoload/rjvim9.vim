@@ -52,7 +52,7 @@ def Restore_links() # {{
 enddef # }}
 def AccurateColorscheme(colo_name: string) # {{
     Find_links()
-    execute 'colorscheme' colo_name
+    execute 'colorscheme' fnameescape(colo_name)
     Restore_links()
 enddef # }}
 # }}
