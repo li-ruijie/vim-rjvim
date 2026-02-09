@@ -278,7 +278,7 @@ def GetFF(file: string): string # {{
 enddef # }}
 def GetTemplateFN(ext: string): string # {{
     return expand(g:templates_path)
-        .. (g:os == 'windows' ? '\' : '/')
+        .. g:dirsep
         .. g:templates_prefix
         .. '.'
         .. expand(ext)
