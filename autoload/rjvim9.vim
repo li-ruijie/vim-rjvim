@@ -13,6 +13,7 @@ enddef # }}
 var known_links: dict<string> = {}
 def Find_links() # {{
     # Find and remember links between highlighting groups.
+    known_links = {}
     var listing: string
     redir => listing
     try
