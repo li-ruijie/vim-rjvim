@@ -173,7 +173,7 @@ enddef # }}
 # Fmt_autoformattoggle {{
 # Toggle the 'a' flag in 'formatoptions' (automatic paragraph reformatting).
 export def Fmt_autoformattoggle() # {{
-    var formatoptionsoperator = strridx(&l:formatoptions, "a") > 0 ?
+    var formatoptionsoperator = stridx(&l:formatoptions, "a") >= 0 ?
         '-' : '+'
     execute ":setlocal formatoptions" .. formatoptionsoperator .. "=a"
     echom "autoformat" .. formatoptionsoperator
