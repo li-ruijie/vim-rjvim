@@ -377,8 +377,8 @@ export def Ut_gensep(
     var line = getline('.')
     var sep = head_val
         .. repeat(body,
-        reduce(map([head_val, body, tail_val],
-        'strlen(v:val)'), (acc, val) => acc - val,
+        reduce(mapnew([head_val, body, tail_val],
+        (_, v) => strlen(v)), (acc, val) => acc - val,
         length + 1))
         .. tail_val
     setline('.',
