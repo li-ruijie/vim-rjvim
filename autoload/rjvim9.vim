@@ -54,12 +54,9 @@ enddef # }}
 # App_colourssw_switchcolours {{
 export def App_colourssw_switchcolours(dir: string) # {{
     if !exists('g:colourssw_combi')
-        g:colourssw_combi = []
-        for i in getcompletion('', 'color')
-            for j in ['dark', 'light']
-                g:colourssw_combi += [[i, j]]
-            endfor
-        endfor
+        g:colourssw_combi = getcompletion('', 'color')
+            ->mapnew((_, c) => [[c, 'dark'], [c, 'light']])
+            ->flattennew(1)
     endif
     if !exists('g:colourssw_default')
         g:colourssw_default = [g:colors_name, &g:background]
