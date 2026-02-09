@@ -217,7 +217,7 @@ enddef # }}
 # Reformat the current paragraph using g:textwidth.
 export def Fmt_formattext_short() # {{
     var origtextwidth = &l:textwidth
-    &l:textwidth = g:textwidth
+    &l:textwidth = exists('g:textwidth') ? g:textwidth : 80
     execute 'normal! gwap\<CR>'
     &l:textwidth = origtextwidth
 enddef # }}
