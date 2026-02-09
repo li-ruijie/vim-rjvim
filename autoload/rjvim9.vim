@@ -302,11 +302,11 @@ enddef # }}
 # Detect whether a file uses dos (CRLF) or unix (LF) line endings by
 # reading the raw bytes and checking for 0D before the first 0A.
 def GetFF(file: string): string # {{
-    # Read the file as a blob, convert to a hex string, then split into
-    # two-character hex pairs (e.g. ['76', '69', '0D', '0A', ...]).
+    # Read the first 1024 bytes as a blob, convert to a hex string, then
+    # split into two-character hex pairs (e.g. ['76', '69', '0D', '0A', ...]).
     var file_bytes = expand(file)
         ->fnameescape()
-        ->readblob()
+        ->readblob(0, 1024)
         ->string()
         ->split('.\{2}\zs')
     var filelen = len(file_bytes)
