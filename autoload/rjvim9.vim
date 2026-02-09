@@ -16,17 +16,15 @@ def Find_links() # {{
     finally
         redir END
     endtry
-    for line in split(listing, "\n")
-        var tokens = split(line)
-        # We're looking for lines like "String xxx links to Constant" in the
-        # output of the :highlight command.
-        if len(tokens) == 5 && tokens[1] == 'xxx'
-                && tokens[2] == 'links' && tokens[3] == 'to'
-            var fromgroup = tokens[0]
-            var togroup = tokens[4]
-            known_links[fromgroup] = togroup
-        endif
-    endfor
+    # We're looking for lines like "String xxx links to Constant" in the
+    # output of the :highlight command.
+    split(listing, "\n")
+        ->mapnew((_, line) => split(line))
+        ->filter((_, t) => len(t) == 5 && t[1] == 'xxx'
+            && t[2] == 'links' && t[3] == 'to')
+        ->foreach((_, t) => {
+            known_links[t[0]] = t[4]
+        })
 enddef # }}
 def Restore_links() # {{
     # Restore broken links between highlighting groups.
