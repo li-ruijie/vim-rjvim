@@ -4,17 +4,17 @@ set cpo&vim
 
 # Plug mappings for rjvim9 {{
 ## Font size adjustments {{
-nnoremap <silent> <Plug>(rjvim-fontsize-decrease) <ScriptCmd>rjvim9#App_fontsize('-')<CR>
-nnoremap <silent> <Plug>(rjvim-fontsize-increase) <ScriptCmd>rjvim9#App_fontsize('+')<CR>
-nnoremap <silent> <Plug>(rjvim-fontsize-default)  <ScriptCmd>rjvim9#App_fontsize('default')<CR>
+nnoremap <silent> <Plug>(rjvim-fontsize-decrease) <Cmd>call rjvim9#App_fontsize('-')<CR>
+nnoremap <silent> <Plug>(rjvim-fontsize-increase) <Cmd>call rjvim9#App_fontsize('+')<CR>
+nnoremap <silent> <Plug>(rjvim-fontsize-default)  <Cmd>call rjvim9#App_fontsize('default')<CR>
 # }}
 ## Color scheme switching {{
-nnoremap <silent> <Plug>(rjvim-colorscheme-next) <ScriptCmd>rjvim9#App_colourssw_switchcolours('+')<CR>
-nnoremap <silent> <Plug>(rjvim-colorscheme-prev) <ScriptCmd>rjvim9#App_colourssw_switchcolours('-')<CR>
+nnoremap <silent> <Plug>(rjvim-colorscheme-next) <Cmd>call rjvim9#App_colourssw_switchcolours('+')<CR>
+nnoremap <silent> <Plug>(rjvim-colorscheme-prev) <Cmd>call rjvim9#App_colourssw_switchcolours('-')<CR>
 # }}
 ## Spell checking {{
-nnoremap <silent> <Plug>(rjvim-spell-accept-first) <ScriptCmd>rjvim9#Ut_spellacceptfirst()<CR>
-inoremap <silent> <Plug>(rjvim-spell-accept-first) <ScriptCmd>rjvim9#Ut_spellacceptfirst()<CR>
+nnoremap <silent> <Plug>(rjvim-spell-accept-first) <Cmd>call rjvim9#Ut_spellacceptfirst()<CR>
+inoremap <silent> <Plug>(rjvim-spell-accept-first) <Cmd>call rjvim9#Ut_spellacceptfirst()<CR>
 # }}
 # }}
 # DTWS {{
