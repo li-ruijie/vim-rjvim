@@ -137,15 +137,10 @@ enddef # }}
 # App_guitablabel {{
 export def App_guitablabel(): string
     # set up tab labels with tab number, buffer name, number of windows
-    var label = ''
     var bufnrlist = tabpagebuflist(v:lnum)
     # Add '+' if one of the buffers in the tab page is modified
-    for bufnr in bufnrlist
-        if getbufvar(bufnr, '&modified')
-            label = '+'
-            break
-        endif
-    endfor
+    var label = empty(copy(bufnrlist)
+        ->filter((_, b) => getbufvar(b, '&modified'))) ? '' : '+'
     # Append the buffer name
     var bnr = bufnr(bufnrlist[tabpagewinnr(v:lnum) - 1])
     var name = bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
