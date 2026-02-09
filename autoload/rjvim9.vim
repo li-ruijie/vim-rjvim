@@ -413,13 +413,9 @@ enddef # }}
 # Ut_DTWS_delete {{
 export def Ut_DTWS_delete(startLnum: number, endLnum: number) # {{
     var save_cursor = getpos('.')
-    execute
-        \ ':' .. startLnum .. ',' ..
-        \ endLnum ..
-        \ 'substitute/' ..
-        \ escape(Ut_DTWS_pattern(), '/') ..
-        \ '//e'
-    histdel('search', -1)
+    getline(startLnum, endLnum)
+        ->mapnew((_, line) => substitute(line, Ut_DTWS_pattern(), '', ''))
+        ->setline(startLnum)
     setpos('.', save_cursor)
 enddef # }}
 # }}
