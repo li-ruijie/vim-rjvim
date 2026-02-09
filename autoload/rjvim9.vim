@@ -321,7 +321,7 @@ export def Sys_info() # {{
         '\' : '/'
 enddef # }}
 def IsWin(): number # {{
-    return map(['win16', 'win32', 'win64'], 'has(v:val)')->max()
+    return ['win16', 'win32', 'win64']->mapnew((_, v) => has(v))->max()
 enddef # }}
 # }}
 # Sys_insertmute_off {{
