@@ -506,14 +506,17 @@ enddef # }}
 # BufWritePre hook: delete or abort on trailing whitespace depending
 # on the configured action.
 export def Ut_DTWS_interceptwrite() # {{
-    if Ut_DTWS_isset() && Ut_DTWS_isaction()
-        if !&l:modifiable && Ut_DTWS_getaction() ==# 'delete'
-            echomsg
-                \ 'Cannot automatically delete trailing whitespace, buffer is'
-                \ .. ' not modifiable'
-            sleep 1 # Need a delay as the message is overwritten by :write.
-            return
-        endif
+    if !Ut_DTWS_isset()
+        return
+    endif
+    if !&l:modifiable && Ut_DTWS_getaction() ==# 'delete'
+        echomsg
+            \ 'Cannot automatically delete trailing whitespace, buffer is'
+            \ .. ' not modifiable'
+        sleep 1 # Need a delay as the message is overwritten by :write.
+        return
+    endif
+    if Ut_DTWS_isaction()
         Ut_DTWS_delete(1, line('$'))
     endif
 enddef # }}
