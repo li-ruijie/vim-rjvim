@@ -266,19 +266,14 @@ def GetFF(file: string): string # {{
         ->readblob()
         ->string()
         ->split('.\{2}\zs')
-    var fileindex = 0
-    var cont = 1
     var filelen = len(file_bytes)
     var filelenbrk = filelen > 80 ? filelen / 2 : filelen
-    while cont == 1
-        var check = file_bytes[fileindex] == '0A'
-        if check || fileindex >= filelenbrk
-            cont = 0
-        else
-            fileindex += 1
-        endif
-    endwhile
-    var fileformat = file_bytes[fileindex - 1] == '0D' ? 'dos' : 'unix'
+    var fileindex = index(slice(file_bytes, 0, filelenbrk), '0A')
+    if fileindex == -1
+        fileindex = filelenbrk
+    endif
+    var fileformat = fileindex > 0 && file_bytes[fileindex - 1] == '0D'
+        ? 'dos' : 'unix'
     return fileformat
 enddef # }}
 def GetTemplateFN(ext: string): string # {{
