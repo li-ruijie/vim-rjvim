@@ -71,6 +71,10 @@ export def App_colourssw_switchcolours(dir: string) # {{
     endif
     g:colourssw_current = [g:colors_name, &g:background]
     g:colourssw_current_ind = index(g:colourssw_combi, g:colourssw_current)
+    # Reset to start if current scheme was changed externally.
+    if g:colourssw_current_ind == -1
+        g:colourssw_current_ind = 0
+    endif
     # Advance or retreat with wrap-around.
     g:colourssw_current_ind = dir ==# '+' ?
         g:colourssw_current_ind == (len(g:colourssw_combi) - 1) ?
