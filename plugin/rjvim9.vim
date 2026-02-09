@@ -1,4 +1,5 @@
 vim9script
+# Save and reset 'compatible' options to ensure consistent behaviour.
 const cpo_save = &cpo
 set cpo&vim
 
@@ -33,6 +34,9 @@ if !exists('g:rjvim9#DTWS_action') # {{
 endif # }}
 # }}
 # autocmds {{
+# Intercept every write to enforce trailing-whitespace policy.
+# Exceptions prefixed "DTWS:" are caught and displayed as errors,
+# which aborts the :write without leaving an unhandled exception.
 augroup DTWS # {{
     autocmd!
     autocmd BufWritePre *
@@ -44,6 +48,9 @@ augroup DTWS # {{
 augroup END # }}
 # }}
 # command: DTWS {{
+# Strip trailing whitespace in the given range without marking an
+# unmodified buffer as modified.  The no-op setline() ensures the
+# buffer is touched so Ut_DTWS_delete can operate on it.
 def DTWSCommand(line1: number, line2: number)
     var isModified = &l:modified
     setline(line1, getline(line1))
@@ -57,4 +64,5 @@ command! -bar -range=% DTWS DTWSCommand(<line1>, <line2>)
 # }}
 # }}
 
+# Restore original 'compatible' options.
 &cpo = cpo_save
