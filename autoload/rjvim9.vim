@@ -487,7 +487,7 @@ enddef # }}
 # Ut_DTWS_getaction {{
 # Return the DTWS action ('delete' or 'abort'), preferring buffer-local.
 export def Ut_DTWS_getaction(): any # {{
-    return (exists('b:DTWS_action') ?
+    return (exists('b:rjvim9#DTWS_action') ?
                 \ b:rjvim9#DTWS_action : g:rjvim9#DTWS_action)
 enddef # }}
 # }}
