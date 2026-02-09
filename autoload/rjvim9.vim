@@ -132,6 +132,9 @@ def App_fontsizechange(adjust: string) # {{
     # Modify the :h<N> size field in the font name string.
     # \zs positions the match start after ":h" so only the digit is replaced.
     # The expression replacement evaluates e.g. str2nr("12") + 1 = 13.
+    if adjust !=# '+' && adjust !=# '-'
+        return
+    endif
     var newsize = ''
     var newsizewide = ''
 
