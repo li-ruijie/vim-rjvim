@@ -476,13 +476,7 @@ enddef # }}
 # }}
 # Ut_DTWS_isset {{
 export def Ut_DTWS_isset(): bool # {{
-    var value = Ut_DTWS_get()
-    var valueStr = string(value)
-    var isSet = empty(value) || valueStr ==# '0' ?
-                \ false :
-                \ valueStr ==# 'always' || valueStr ==# '1' ?
-                \ true : false
-    return isSet
+    return index(['1', 'always'], string(Ut_DTWS_get())) >= 0
 enddef # }}
 # }}
 # Ut_DTWS_pattern {{
