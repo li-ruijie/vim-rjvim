@@ -321,8 +321,9 @@ def GetFF(file: string): string # {{
 enddef # }}
 # Build the full path to a template file for the given extension.
 def GetTemplateFN(ext: string): string # {{
+    var dirsep = IsWin() ? '\' : '/'
     return expand(g:templates_path)
-        .. g:dirsep
+        .. dirsep
         .. g:templates_prefix
         .. '.'
         .. expand(ext)
