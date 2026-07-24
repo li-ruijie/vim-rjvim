@@ -84,4 +84,4 @@ Manual command: `:DTWS` (works with range)
 
 ## License
 
-GPL-3.0
+AGPL-3.0

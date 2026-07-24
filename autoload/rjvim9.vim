@@ -486,9 +486,13 @@ enddef # }}
 # Remove trailing whitespace from lines startLnum..endLnum.
 export def Ut_DTWS_delete(startLnum: number, endLnum: number) # {{
     var save_cursor = getpos('.')
-    getline(startLnum, endLnum)
-        ->mapnew((_, line) => substitute(line, Ut_DTWS_pattern(), '', ''))
-        ->setline(startLnum)
+    # Only rewrite lines that actually have trailing whitespace. Rewriting
+    # every line (even unchanged) makes a whole-buffer :DTWS or the on-write
+    # hook rebuild every fold under 'foldmethod=expr' (pandoc), which hangs.
+    var pattern = Ut_DTWS_pattern()
+    range(startLnum, endLnum)
+        ->filter((_, lnum) => getline(lnum) =~# pattern)
+        ->foreach((_, lnum) => setline(lnum, substitute(getline(lnum), pattern, '', '')))
     setpos('.', save_cursor)
 enddef # }}
 # }}
