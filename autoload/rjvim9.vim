@@ -194,7 +194,9 @@ export def Fmt_breakonperiod() # {{
     var save_pos = getcurpos()
     silent! execute ':.s/\. /.\r/e'
     setpos('.', save_pos)
-    silent! execute ':DTWS'
+    # Strip only the split paragraph. A bare :DTWS spans the whole buffer,
+    # which hangs under 'foldmethod=expr' (pandoc) on large files.
+    silent! execute ":'{,'}DTWS"
 enddef # }}
 # }}
 # Fmt_fixfileformat {{
