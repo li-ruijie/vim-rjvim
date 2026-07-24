@@ -236,7 +236,10 @@ export def Fmt_formattext_long() # {{
     silent! execute "normal! gwap"
     silent! execute 's/\s\s\+/ /e'
     silent! execute 's/\(\.\)\( \u\l\)/\1 \2/e'
-    silent! execute ':DTWS'
+    # Restrict to the current line. A bare :DTWS spans the whole buffer,
+    # which forces a full-buffer fold recompute under 'foldmethod=expr'
+    # (as pandoc sets), making this extremely slow on large files.
+    silent! execute ':.DTWS'
     &l:textwidth = origtextwidth
     setpos('.', save_pos)
 enddef # }}
