@@ -192,7 +192,7 @@ enddef # }}
 export def Fmt_breakonperiod() # {{
     Fmt_formattext_long()
     var save_pos = getcurpos()
-    silent! execute ':.s/\. /.\r/e'
+    silent! execute ':.s/\. /.\r/ge'
     setpos('.', save_pos)
     # Strip only the split paragraph. A bare :DTWS spans the whole buffer,
     # which hangs under 'foldmethod=expr' (pandoc) on large files.
