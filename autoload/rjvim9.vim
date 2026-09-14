@@ -279,10 +279,11 @@ export def Ft_sh_init() # {{
         autocmd FileType sh Run_ftshinit()
     augroup END
 enddef # }}
+# Runs inside the FileType autocmd, so the options are buffer-local and
+# the filetype is already sh.
 def Run_ftshinit() # {{
-    set filetype=sh
-    set foldenable
-    set foldmethod=syntax
+    setlocal foldenable
+    setlocal foldmethod=syntax
     g:is_bash = 1
     g:sh_fold_enabled = 7
     g:sh_no_error = 0
@@ -370,8 +371,7 @@ export def Sys_info() # {{
         'unknown'
     g:root = g:os ==# 'windows' ?
         filewritable('C:\Windows\System32') :
-        system('printf ''%s'' "$USER"') ==# 'root' ?
-        1 : 0
+        $USER ==# 'root' ? 1 : 0
     g:dirsep = g:os ==# 'windows' ?
         '\' : '/'
 enddef # }}
