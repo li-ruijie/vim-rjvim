@@ -224,7 +224,13 @@ enddef # }}
 export def Fmt_formattext_short() # {{
     var origtextwidth = &l:textwidth
     &l:textwidth = exists('g:textwidth') ? g:textwidth : 80
+    # An insert-mode cursor past the end of the line comes back from gw on
+    # the last character, so step it over that character again.
+    var pastend = col('.') > strlen(getline('.'))
     execute 'normal! gwap\<CR>'
+    if pastend
+        setcursorcharpos(line('.'), charcol('.') + 1)
+    endif
     &l:textwidth = origtextwidth
 enddef # }}
 # }}
