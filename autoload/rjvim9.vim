@@ -263,6 +263,52 @@ export def Fmt_formattext_isolated() # {{
     setpos('.', save_pos)
 enddef # }}
 # }}
+# Fmt_formattext_tex {{
+# Reformat the LaTeX block under the cursor using g:textwidth.  A bare gwap
+# takes the whole blank-line paragraph, joining \begin, \end, and \item lines
+# into the text.  Find the block the way vimtex's formatter does, isolate it
+# with blank lines, and format it with gw, which keeps the cursor in place.
+export def Fmt_formattext_tex() # {{
+    var lnum = line('.')
+    if getline(lnum) =~# tex_alone
+        return
+    endif
+    var up = range(lnum, 2, -1)
+        ->indexof((_, l) => !TexJoins(getline(l - 1), getline(l)))
+    var down = range(lnum, line('$') - 1)
+        ->indexof((_, l) => !TexJoins(getline(l), getline(l + 1)))
+    var top = up < 0 ? 1 : lnum - up
+    var bottom = down < 0 ? line('$') : lnum + down
+    append(bottom, '')
+    append(top - 1, '')
+    # An operator in a closed fold takes the whole fold, so disable folding
+    # while it runs.
+    var foldenable = &l:foldenable
+    &l:foldenable = false
+    Fmt_formattext_short()
+    &l:foldenable = foldenable
+    # gw leaves the cursor in the block, so the first blank line below it is
+    # the one added under the block.
+    deletebufline(bufnr(), search('^\s*$', 'nW'))
+    deletebufline(bufnr(), top)
+enddef # }}
+# Pattern for a line that opens a block, which is vimtex's
+# g:vimtex_format_border_begin plus \caption and the run-in \paragraph heading.
+const tex_opens = '\v^\s*%(\\%(item|begin|end|caption|paragraph)|%(\\\[|\$\$)\s*$)'
+# Pattern for a line that closes its block, taken from vimtex's
+# g:vimtex_format_border_end.
+const tex_closes = '\v\\%(\\\*?|clear%(double)?page|linebreak|new%(line|page)|pagebreak'
+    .. '|%(begin|end)\{[^}]*\})\s*$|^\s*%(\\\]|\$\$)\s*$'
+# Pattern for a line that joins neither neighbour, namely a blank line, a
+# comment (text joined after it would be commented out), a heading or \label,
+# or a bare command such as \noindent.
+const tex_alone = '\v^\s*$|%(^|[^\\])\%|^\s*\\%(%(sub){,2}section|chapter|part|label)>'
+    .. '|^\s*\\\a+\*?\s*$'
+# Return whether LaTeX line a can be joined with line b below it.
+def TexJoins(a: string, b: string): bool # {{
+    return a !~# tex_closes && b !~# tex_opens && a !~# tex_alone && b !~# tex_alone
+enddef # }}
+# }}
 # Fmt_insert_blank {{
 # Insert blank lines above ('up'), below ('down'), or both ('updown').
 export def Fmt_insert_blank(mode: string) # {{

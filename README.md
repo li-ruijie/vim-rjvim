@@ -69,6 +69,7 @@ Manual command: `:DTWS` (works with range)
 | `rjvim9#Fmt_formattext_short()` | Format paragraph to `g:textwidth` |
 | `rjvim9#Fmt_formattext_long()` | Join paragraph into a single long line |
 | `rjvim9#Fmt_formattext_isolated()` | Format paragraph without merging neighbours |
+| `rjvim9#Fmt_formattext_tex()` | Format a LaTeX block, keeping `\begin`, `\end`, and `\item` lines apart |
 | `rjvim9#Fmt_breakonperiod()` | Split paragraph on sentence boundaries |
 | `rjvim9#Fmt_autoformattoggle()` | Toggle `formatoptions+=a` |
 | `rjvim9#Fmt_fixfileformat()` | Fix mixed line endings (CRLF/LF) |
