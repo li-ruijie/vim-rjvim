@@ -223,20 +223,26 @@ enddef # }}
 # Reformat the current paragraph using g:textwidth.
 export def Fmt_formattext_short() # {{
     var origtextwidth = &l:textwidth
+    # An operator in a closed fold takes the whole fold, so disable folding
+    # while it runs.  Joined lines get one space after a sentence end.
+    var foldenable = &l:foldenable
+    var joinspaces = &joinspaces
     &l:textwidth = exists('g:textwidth') ? g:textwidth : 80
+    &l:foldenable = false
+    &joinspaces = false
     # An insert-mode cursor past the end of the line comes back from gw on
     # the last character, so step it over that character again.
     var pastend = col('.') > strlen(getline('.'))
-    # An operator in a closed fold takes the whole fold, so disable folding
-    # while it runs.
-    var foldenable = &l:foldenable
-    &l:foldenable = false
-    execute 'normal! gwap'
-    &l:foldenable = foldenable
+    try
+        execute 'normal! gwap'
+    finally
+        &l:textwidth = origtextwidth
+        &l:foldenable = foldenable
+        &joinspaces = joinspaces
+    endtry
     if pastend
         setcursorcharpos(line('.'), charcol('.') + 1)
     endif
-    &l:textwidth = origtextwidth
 enddef # }}
 # }}
 # Fmt_formattext_long {{
