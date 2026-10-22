@@ -261,11 +261,22 @@ enddef # }}
 # Wrap the current paragraph in blank lines, reformat it, then remove them.
 # Prevents reformatting from merging with adjacent paragraphs.
 export def Fmt_formattext_isolated() # {{
-    var save_pos = getcurpos()
-    Fmt_insert_blank("updown")
+    if getline('.') =~# '^\s*$'
+        return
+    endif
+    FormatIsolated(line('.'), line('.'))
+enddef # }}
+# Format lines top..bottom, which hold the cursor, as one paragraph.  Blank
+# lines added around them keep gwap from reaching past them, and are removed
+# again afterwards.
+def FormatIsolated(top: number, bottom: number) # {{
+    append(bottom, '')
+    append(top - 1, '')
     Fmt_formattext_short()
-    execute 'normal! {dd}dd'
-    setpos('.', save_pos)
+    # gw leaves the cursor in the block, so the first blank line below it is
+    # the one added under the block.
+    deletebufline(bufnr(), search('^\s*$', 'nW'))
+    deletebufline(bufnr(), top)
 enddef # }}
 # }}
 # Fmt_formattext_tex {{
@@ -284,13 +295,7 @@ export def Fmt_formattext_tex() # {{
         ->indexof((_, l) => !TexJoins(getline(l), getline(l + 1)))
     var top = up < 0 ? 1 : lnum - up
     var bottom = down < 0 ? line('$') : lnum + down
-    append(bottom, '')
-    append(top - 1, '')
-    Fmt_formattext_short()
-    # gw leaves the cursor in the block, so the first blank line below it is
-    # the one added under the block.
-    deletebufline(bufnr(), search('^\s*$', 'nW'))
-    deletebufline(bufnr(), top)
+    FormatIsolated(top, bottom)
 enddef # }}
 # Pattern for a line that opens a block, which is vimtex's
 # g:vimtex_format_border_begin plus \caption and the run-in \paragraph heading.
