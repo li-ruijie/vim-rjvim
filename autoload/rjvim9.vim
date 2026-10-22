@@ -324,11 +324,12 @@ enddef # }}
 # Insert blank lines above ('up'), below ('down'), or both ('updown').
 export def Fmt_insert_blank(mode: string) # {{
     var lnum = line('.')
-    if mode ==# 'up' || mode ==# 'updown'
-        append(lnum - 1, '')
-    endif
+    # Insert below first, since inserting above moves the line down.
     if mode ==# 'down' || mode ==# 'updown'
         append(lnum, '')
+    endif
+    if mode ==# 'up' || mode ==# 'updown'
+        append(lnum - 1, '')
     endif
 enddef # }}
 # }}
