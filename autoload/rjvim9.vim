@@ -227,7 +227,12 @@ export def Fmt_formattext_short() # {{
     # An insert-mode cursor past the end of the line comes back from gw on
     # the last character, so step it over that character again.
     var pastend = col('.') > strlen(getline('.'))
+    # An operator in a closed fold takes the whole fold, so disable folding
+    # while it runs.
+    var foldenable = &l:foldenable
+    &l:foldenable = false
     execute 'normal! gwap'
+    &l:foldenable = foldenable
     if pastend
         setcursorcharpos(line('.'), charcol('.') + 1)
     endif
@@ -281,12 +286,7 @@ export def Fmt_formattext_tex() # {{
     var bottom = down < 0 ? line('$') : lnum + down
     append(bottom, '')
     append(top - 1, '')
-    # An operator in a closed fold takes the whole fold, so disable folding
-    # while it runs.
-    var foldenable = &l:foldenable
-    &l:foldenable = false
     Fmt_formattext_short()
-    &l:foldenable = foldenable
     # gw leaves the cursor in the block, so the first blank line below it is
     # the one added under the block.
     deletebufline(bufnr(), search('^\s*$', 'nW'))

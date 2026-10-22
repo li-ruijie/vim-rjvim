@@ -3,6 +3,7 @@
 ┌────────────┬────────────────────────────────────────────────────────────────────────┐
 │ Date       │ Summary                                                                │
 ├────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 2026-10-22 │ Fmt_formattext_short: format one paragraph inside a closed fold        │
 │ 2026-10-22 │ Fmt_formattext_short: drop the stray keys sent after gwap              │
 │ 2026-10-22 │ Fmt_formattext_tex: LaTeX-aware wrap that keeps \begin and \end apart  │
 │ 2026-10-22 │ Fmt_formattext_short: keep an insert-mode cursor past the line end     │
