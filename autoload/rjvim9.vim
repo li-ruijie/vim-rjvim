@@ -625,9 +625,9 @@ export def Ut_DTWS_isaction(): bool # {{
 enddef # }}
 # }}
 # Ut_DTWS_isset {{
-# Return true if DTWS is enabled (value is '1' or 'always').
+# Return true if DTWS is enabled (value is 1, true, '1', or 'always').
 export def Ut_DTWS_isset(): bool # {{
-    return index(['1', 'always'], string(Ut_DTWS_get())) >= 0
+    return index([1, true, '1', 'always'], Ut_DTWS_get()) >= 0
 enddef # }}
 # }}
 # Ut_DTWS_pattern {{

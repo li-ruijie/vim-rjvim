@@ -3,6 +3,7 @@
 ┌────────────┬────────────────────────────────────────────────────────────────────────┐
 │ Date       │ Summary                                                                │
 ├────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 2026-11-25 │ Ut_DTWS_isset: accept 'always', as documented, and true                │
 │ 2026-11-25 │ Ft_templates: line endings read from the bytes, paths with spaces      │
 │ 2026-11-25 │ Fmt_formattext_long: cursor stays in the joined paragraph, folds off   │
 │ 2026-11-25 │ Fmt_fixfileformat: compiles again, and leaves the buffer modified      │
