@@ -463,7 +463,14 @@ enddef # }}
 # Sys_insertmute_move {{
 # Perform a motion in insert mode without firing InsertEnter/InsertLeave.
 export def Sys_insertmute_move(motion: string): string # {{
-    return Sys_insertmute_on(motion) .. Sys_insertmute_off()
+    # The returned keys run after this function has returned, so the events
+    # are unmuted from a timer, which fires once Vim is idle again. Keys
+    # appended to the motion could not do it, since a motion that fails
+    # (gj on the last line) discards the rest of its mapping.
+    timer_start(0, (_) => {
+        Sys_insertmute_off()
+    })
+    return Sys_insertmute_on(motion)
 enddef # }}
 # }}
 
