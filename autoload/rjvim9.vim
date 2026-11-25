@@ -92,18 +92,16 @@ enddef # }}
 # switch: 1 = enable, 0 or 2 = disable (2 is treated as off).
 export def App_conceal_automode(switch: number) # {{
     var switch_val = switch == 2 ? 0 : switch
-    if switch_val == 0
+    if switch_val == 0 || &l:conceallevel == 0
         return
     endif
-    if &l:conceallevel != 0
-        var conceallevel_init = &l:conceallevel
-        augroup insertmode_conceal
-            autocmd!
-            autocmd InsertEnter * let &l:conceallevel = 0
-            execute 'autocmd InsertLeave * let &l:conceallevel = '
-                .. conceallevel_init
-        augroup END
-    endif
+    # Scoped to this buffer, so insert mode elsewhere keeps its own level.
+    var common = {group: 'insertmode_conceal', bufnr: bufnr(), replace: true}
+    autocmd_add([
+        common->extendnew({event: 'InsertEnter', cmd: '&l:conceallevel = 0'}),
+        common->extendnew({event: 'InsertLeave',
+            cmd: $'&l:conceallevel = {&l:conceallevel}'}),
+    ])
 enddef # }}
 # }}
 # App_fontsize {{
