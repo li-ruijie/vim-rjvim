@@ -412,11 +412,13 @@ enddef # }}
 # last-modified timestamp (YYYYMMDDHHmmSS) for unique versioned backups.
 def Setupbackup() # {{
     var filename = expand('%')
-    var backupdir = '.vbak/' .. filename
-    if empty(glob(backupdir))
-        mkdir(backupdir, "p")
-    endif
-    &l:backupdir = backupdir
+    # Anchored on the file's own directory, so the backups land beside the
+    # file whatever the working directory is.
+    var backupdir = expand('%:p:h') .. '/.vbak/' .. expand('%:t')
+    mkdir(backupdir, "p")
+    # 'backupdir' is a comma-separated list, so a comma in the file name
+    # needs a backslash.
+    &l:backupdir = escape(backupdir, ',')
     var fileftime = getftime(filename)
     var tformat = '%Y%m%d%H%M%S'
     &l:backupext = '.' .. (fileftime == -1 ?

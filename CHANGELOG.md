@@ -3,6 +3,7 @@
 ┌────────────┬────────────────────────────────────────────────────────────────────────┐
 │ Date       │ Summary                                                                │
 ├────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 2026-11-25 │ Sys_backupenable: backups beside the file, commas in names escaped     │
 │ 2026-11-25 │ App_guitablabel: quickfix label from the tab's buffer, not the current │
 │ 2026-11-25 │ App_conceal_automode: Vim9 autocommands, scoped to the buffer          │
 │ 2026-11-25 │ Sys_insertmute_move: events stay muted until the motion has run        │
