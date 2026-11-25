@@ -3,6 +3,7 @@
 ┌────────────┬────────────────────────────────────────────────────────────────────────┐
 │ Date       │ Summary                                                                │
 ├────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 2026-11-25 │ Sys_insertmute_move: an <Esc> typed ahead keeps its InsertLeave        │
 │ 2026-11-25 │ Fmt_formattext_short: wraps at g:textwidth in a narrow window too      │
 │ 2026-11-25 │ :DTWS leaves the buffer modified when it removed whitespace            │
 │ 2026-11-25 │ DTWS abort: no E1023 past line 1, and :w! writes without stripping     │

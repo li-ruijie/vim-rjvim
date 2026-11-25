@@ -498,13 +498,16 @@ enddef # }}
 # Sys_insertmute_move {{
 # Perform a motion in insert mode without firing InsertEnter/InsertLeave.
 export def Sys_insertmute_move(motion: string): string # {{
-    # The returned keys run after this function has returned, so the events
-    # are unmuted from a timer, which fires once Vim is idle again. Keys
-    # appended to the motion could not do it, since a motion that fails
-    # (gj on the last line) discards the rest of its mapping.
-    timer_start(0, (_) => {
-        Sys_insertmute_off()
-    })
+    # The returned keys run after this function has returned.  CTRL-O runs
+    # the motion in the mode niI (niR and niV from the Replace modes), and
+    # the events are unmuted when that mode ends, which is after the muted
+    # InsertEnter of the return and before the next typed key.  A motion that
+    # fails (gj on the last line) ends the mode as well, while keys appended
+    # to the motion would be discarded with it.  A timer fires only once Vim
+    # is idle, so an <Esc> typed ahead lost its InsertLeave.
+    autocmd_add([{group: 'rjvim9_insertmute', event: 'ModeChanged',
+        pattern: 'ni[IRV]:*', cmd: 'Sys_insertmute_off()', once: true,
+        replace: true}])
     return Sys_insertmute_on(motion)
 enddef # }}
 # }}
