@@ -206,16 +206,18 @@ enddef # }}
 export def Fmt_fixfileformat() # {{
     if &l:modified
         echom 'Save the file first.'
-        return 1
+        return
     endif
-    if execute('%s/\r//en')->substitute('^\n', '', 'g')
+    if search('\r', 'nw') > 0
         var fforig = &l:fileformat
         if &l:fileformat ==# 'dos'
-            set fileformat=unix
+            setlocal fileformat=unix
             write
         endif
         edit ++fileformat=dos
         &l:fileformat = fforig
+        # The file on disk still has the old line endings until it is written.
+        setlocal modified
     endif
 enddef # }}
 # }}
