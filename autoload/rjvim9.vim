@@ -230,6 +230,13 @@ export def Fmt_formattext_short() # {{
     &l:textwidth = exists('g:textwidth') ? g:textwidth : 80
     &l:foldenable = false
     &joinspaces = false
+    # gw breaks a line where the virtual column passes 'textwidth', and under
+    # 'wrap' that column counts the 'showbreak' text of every screen row the
+    # joined line has wrapped onto.  In a window narrower than the text the
+    # lines would come out short of g:textwidth, so wrapping is off while it
+    # runs.
+    var wrap = &l:wrap
+    &l:wrap = false
     # An insert-mode cursor past the end of the line comes back from gw on
     # the last character, so step it over that character again.
     var pastend = col('.') > strlen(getline('.'))
@@ -239,6 +246,7 @@ export def Fmt_formattext_short() # {{
         &l:textwidth = origtextwidth
         &l:foldenable = foldenable
         &joinspaces = joinspaces
+        &l:wrap = wrap
     endtry
     if pastend
         setcursorcharpos(line('.'), charcol('.') + 1)
