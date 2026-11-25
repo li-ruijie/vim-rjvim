@@ -3,6 +3,7 @@
 ┌────────────┬────────────────────────────────────────────────────────────────────────┐
 │ Date       │ Summary                                                                │
 ├────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 2026-11-25 │ Fmt_formattext_long: cursor stays in the joined paragraph, folds off   │
 │ 2026-11-25 │ Fmt_fixfileformat: compiles again, and leaves the buffer modified      │
 │ 2026-10-22 │ Fmt_insert_blank: 'updown' puts the second blank line below the line   │
 │ 2026-10-22 │ Fmt_formattext_short: nojoinspaces while formatting, options restored  │

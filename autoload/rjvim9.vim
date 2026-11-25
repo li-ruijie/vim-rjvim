@@ -251,17 +251,28 @@ enddef # }}
 # Join the current paragraph into a single long line, collapse multiple
 # spaces, and fix double-space after sentence-ending periods.
 export def Fmt_formattext_long() # {{
-    var save_pos = getcurpos()
     var origtextwidth = &l:textwidth
+    # An operator in a closed fold takes the whole fold, so disable folding
+    # while it runs, as Fmt_formattext_short() does.
+    var foldenable = &l:foldenable
     &l:textwidth = 800000000
-    silent! execute "normal! gwap"
+    &l:foldenable = false
+    try
+        silent! execute "normal! gwap"
+    finally
+        &l:textwidth = origtextwidth
+        &l:foldenable = foldenable
+    endtry
+    # gw keeps the cursor on the same text, which is now on the joined line.
+    # A position saved before the join would name a line further down, in
+    # the next paragraph whenever the cursor started below the first line.
+    var save_pos = getcurpos()
     silent! execute 's/\s\s\+/ /e'
     silent! execute 's/\(\.\)\( \u\l\)/\1 \2/e'
     # Restrict to the current line. A bare :DTWS spans the whole buffer,
     # which forces a full-buffer fold recompute under 'foldmethod=expr'
     # (as pandoc sets), making this extremely slow on large files.
     silent! execute ':.DTWS'
-    &l:textwidth = origtextwidth
     setpos('.', save_pos)
 enddef # }}
 # }}
