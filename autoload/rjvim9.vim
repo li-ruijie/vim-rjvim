@@ -410,18 +410,34 @@ enddef # }}
 # }}
 
 # Sys_backupenable {{
-# Enable persistent undo and timestamped backups under .vbak/<filename>/.
+# Enable persistent undo and timestamped backups under .vbak/<filename>/ for
+# the current buffer.
 export def Sys_backupenable() # {{
     setlocal undofile
-    setlocal backup
+    b:rjvim9_backup = true
+    if empty(backup_defaults)
+        backup_defaults = {
+            backup: &backup, backupdir: &backupdir, backupext: &backupext}
+    endif
     augroup enablebackupsprewrite
         autocmd!
         autocmd BufWritePre * Setupbackup()
     augroup END
 enddef # }}
+# 'backup', 'backupdir', and 'backupext' as they were before the first call
+# of Sys_backupenable().  All three are global options, so every write sets
+# them, to these values for a buffer that has not enabled backups.
+var backup_defaults: dict<any> = {}
 # Create the backup directory and set the backup extension to the file's
 # last-modified timestamp (YYYYMMDDHHmmSS) for unique versioned backups.
 def Setupbackup() # {{
+    if !get(b:, 'rjvim9_backup', false)
+        &backup = backup_defaults.backup
+        &backupdir = backup_defaults.backupdir
+        &backupext = backup_defaults.backupext
+        return
+    endif
+    &backup = true
     var filename = expand('%')
     # Anchored on the file's own directory, so the backups land beside the
     # file whatever the working directory is.
@@ -429,10 +445,10 @@ def Setupbackup() # {{
     mkdir(backupdir, "p")
     # 'backupdir' is a comma-separated list, so a comma in the file name
     # needs a backslash.
-    &l:backupdir = escape(backupdir, ',')
+    &backupdir = escape(backupdir, ',')
     var fileftime = getftime(filename)
     var tformat = '%Y%m%d%H%M%S'
-    &l:backupext = '.' .. (fileftime == -1 ?
+    &backupext = '.' .. (fileftime == -1 ?
         strftime("%Y%m%d%H%M%S") :
         strftime(tformat, getftime(filename)))
 enddef # }}

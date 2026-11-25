@@ -3,6 +3,7 @@
 ┌────────────┬────────────────────────────────────────────────────────────────────────┐
 │ Date       │ Summary                                                                │
 ├────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 2026-11-25 │ Sys_backupenable: backups only for the buffers that enabled them       │
 │ 2026-11-25 │ Fmt_formattext_long: one space between words and after sentences       │
 │ 2026-11-25 │ Sys_backupenable: backups beside the file, commas in names escaped     │
 │ 2026-11-25 │ App_guitablabel: quickfix label from the tab's buffer, not the current │
