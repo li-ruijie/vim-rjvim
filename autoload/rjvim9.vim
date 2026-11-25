@@ -382,25 +382,12 @@ export def Ft_templates() # {{
     appendbufline(bufnr(), 0, insert)
     &l:fileformat = GetFF(template)
 enddef # }}
-# Detect whether a file uses dos (CRLF) or unix (LF) line endings by
-# reading the raw bytes and checking for 0D before the first 0A.
+# Detect whether a file uses dos (CRLF) or unix (LF) line endings, from the
+# byte before the first line feed in its first 1024 bytes.
 def GetFF(file: string): string # {{
-    # Read the first 1024 bytes as a blob, convert to a hex string, then
-    # split into two-character hex pairs (e.g. ['76', '69', '0D', '0A', ...]).
-    var file_bytes = expand(file)
-        ->fnameescape()
-        ->readblob(0, 1024)
-        ->string()
-        ->split('.\{2}\zs')
-    var filelen = len(file_bytes)
-    var filelenbrk = filelen > 80 ? filelen / 2 : filelen
-    var fileindex = index(slice(file_bytes, 0, filelenbrk), '0A')
-    if fileindex == -1
-        fileindex = filelenbrk
-    endif
-    var fileformat = fileindex > 0 && file_bytes[fileindex - 1] == '0D'
-        ? 'dos' : 'unix'
-    return fileformat
+    var bytes = readblob(file, 0, 1024)
+    var nl = bytes->index(10)
+    return nl > 0 && bytes[nl - 1] == 13 ? 'dos' : 'unix'
 enddef # }}
 # Build the full path to a template file for the given extension.
 def GetTemplateFN(ext: string): string # {{
