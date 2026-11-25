@@ -168,7 +168,7 @@ export def App_guitablabel(): string
     var name = bufname(bufnrlist[tabpagewinnr(v:lnum) - 1])
     # give a name to no-name documents
     name = name ==? '' ?
-        (&buftype ==? 'quickfix' ?
+        (getbufvar(bnr, '&buftype') ==? 'quickfix' ?
         '[Quickfix List]' :
         '[No Name]') :
         fnamemodify(name, ':t')
