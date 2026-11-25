@@ -246,32 +246,43 @@ export def Fmt_formattext_short() # {{
 enddef # }}
 # }}
 # Fmt_formattext_long {{
-# Join the current paragraph into a single long line, collapse multiple
-# spaces, and fix double-space after sentence-ending periods.
+# Join the current paragraph into a single long line with one space between
+# words and after each sentence, and no trailing whitespace.
 export def Fmt_formattext_long() # {{
     var origtextwidth = &l:textwidth
     # An operator in a closed fold takes the whole fold, so disable folding
-    # while it runs, as Fmt_formattext_short() does.
+    # while it runs, as Fmt_formattext_short() does.  Joined lines get one
+    # space after a sentence end.
     var foldenable = &l:foldenable
+    var joinspaces = &joinspaces
     &l:textwidth = 800000000
     &l:foldenable = false
+    &joinspaces = false
     try
         silent! execute "normal! gwap"
     finally
         &l:textwidth = origtextwidth
         &l:foldenable = foldenable
+        &joinspaces = joinspaces
     endtry
     # gw keeps the cursor on the same text, which is now on the joined line.
     # A position saved before the join would name a line further down, in
     # the next paragraph whenever the cursor started below the first line.
-    var save_pos = getcurpos()
-    silent! execute 's/\s\s\+/ /e'
-    silent! execute 's/\(\.\)\( \u\l\)/\1 \2/e'
-    # Restrict to the current line. A bare :DTWS spans the whole buffer,
-    # which forces a full-buffer fold recompute under 'foldmethod=expr'
-    # (as pandoc sets), making this extremely slow on large files.
-    silent! execute ':.DTWS'
-    setpos('.', save_pos)
+    var lnum = line('.')
+    var text = getline(lnum)
+    var before = strpart(text, 0, col('.') - 1)
+    var tidy = OneSpace(text)->substitute('\s\+$', '', '')
+    # Only this line is rewritten, and only when it changes. Touching more
+    # forces a full-buffer fold recompute under 'foldmethod=expr' (as pandoc
+    # sets), which is extremely slow on large files.
+    if tidy !=# text
+        setline(lnum, tidy)
+    endif
+    cursor(lnum, strlen(OneSpace(before)) + 1)
+enddef # }}
+# Collapse each run of blanks after the indent of text to one space.
+def OneSpace(text: string): string # {{
+    return substitute(text, '\S\zs\s\{2,}', ' ', 'g')
 enddef # }}
 # }}
 # Fmt_formattext_isolated {{
