@@ -48,19 +48,10 @@ augroup DTWS # {{
 augroup END # }}
 # }}
 # command: DTWS {{
-# Strip trailing whitespace in the given range without marking an
-# unmodified buffer as modified.  The no-op setline() ensures the
-# buffer is touched so Ut_DTWS_delete can operate on it.
-def DTWSCommand(line1: number, line2: number)
-    var isModified = &l:modified
-    setline(line1, getline(line1))
-    rjvim9#Ut_DTWS_delete(line1, line2)
-    if !isModified
-        setlocal nomodified
-    endif
-enddef
-
-command! -bar -range=% DTWS DTWSCommand(<line1>, <line2>)
+# Strip trailing whitespace in the given range. Ut_DTWS_delete() rewrites
+# only the lines that have some, so the buffer becomes modified exactly
+# when the command changed it.
+command! -bar -range=% DTWS rjvim9#Ut_DTWS_delete(<line1>, <line2>)
 # }}
 # }}
 
