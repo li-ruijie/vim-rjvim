@@ -637,13 +637,14 @@ export def Ut_DTWS_interceptwrite() # {{
 enddef # }}
 # }}
 # Ut_DTWS_isaction {{
-# Execute the configured DTWS action and return true, or throw to abort.
+# Return whether trailing whitespace is to be deleted on this write, or throw
+# to abort the write.
 export def Ut_DTWS_isaction(): bool # {{
     var action = Ut_DTWS_getaction()
     if action ==# 'delete'
         return true
     elseif action ==# 'abort'
-        if !v:cmdbang && Ut_DTWS_hastrailingwhitespace()
+        if !v:cmdbang && Ut_DTWS_hastrailingwhitespace() > 0
             # Note: Defining a no-op BufWriteCmd only comes into effect on the
             # next write, but does not affect the current one. Since we don't
             # want to install such an autocmd across the board, the best we can
@@ -652,7 +653,8 @@ export def Ut_DTWS_isaction(): bool # {{
                 \ 'DTWS: Trailing whitespace found, aborting write ' ..
                 \ '(add ! to override, or :DTWS to eradicate)'
         endif
-        return true
+        # Clean, or overridden with a bang, so the buffer is written as it is.
+        return false
     else
         throw 'ASSERT: Invalid value for DTWS_action: ' .. string(action)
     endif
