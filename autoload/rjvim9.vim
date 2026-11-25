@@ -320,9 +320,10 @@ enddef # }}
 # takes the whole blank-line paragraph, joining \begin, \end, and \item lines
 # into the text.  Find the block the way vimtex's formatter does, isolate it
 # with blank lines, and format it with gw, which keeps the cursor in place.
+# A line of the preamble is left as it is, like a line that stands alone.
 export def Fmt_formattext_tex() # {{
     var lnum = line('.')
-    if getline(lnum) =~# tex_alone
+    if getline(lnum) =~# tex_alone || lnum < TexBodyStart()
         return
     endif
     var up = range(lnum, 2, -1)
@@ -332,6 +333,13 @@ export def Fmt_formattext_tex() # {{
     var top = up < 0 ? 1 : lnum - up
     var bottom = down < 0 ? line('$') : lnum + down
     FormatIsolated(top, bottom)
+enddef # }}
+# Return the line of the first \begin{document}, or 0 in a file without one,
+# such as a chapter read with \input.  The lines above it are the preamble.
+# They hold declarations, which are code, so joining \documentclass and
+# \usepackage lines or wrapping a definition would only harm them.
+def TexBodyStart(): number # {{
+    return getline(1, '$')->match('\C^\s*\\begin\s*{document}') + 1
 enddef # }}
 # Pattern for a line that opens a block, which is vimtex's
 # g:vimtex_format_border_begin plus \caption and the run-in \paragraph heading.
