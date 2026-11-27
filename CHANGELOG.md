@@ -3,6 +3,7 @@
 ┌────────────┬────────────────────────────────────────────────────────────────────────┐
 │ Date       │ Summary                                                                │
 ├────────────┼────────────────────────────────────────────────────────────────────────┤
+│ 2026-11-27 │ Ft_templates: binary skeletons (Office, Visio) are skipped             │
 │ 2026-11-27 │ Ft_templates: no empty line left below the skeleton in a new file      │
 │ 2026-11-25 │ Fmt_formattext_tex: the preamble is left as it is, nothing is joined   │
 │ 2026-11-25 │ Sys_insertmute_move: an <Esc> typed ahead keeps its InsertLeave        │

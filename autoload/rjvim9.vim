@@ -403,6 +403,11 @@ export def Ft_templates() # {{
     if !filereadable(template)
         return
     endif
+    # A binary skeleton, such as an Office or Visio file, is no text to put
+    # in a buffer. A NUL byte near its start shows it.
+    if readblob(template, 0, 1024)->index(0) >= 0
+        return
+    endif
     var insert = readfile(template)
     # A new buffer holds one empty line, which the skeleton replaces, so that
     # no empty line is left below it.
