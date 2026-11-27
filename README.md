@@ -64,7 +64,7 @@ Manual command: `:DTWS` (works with range)
 |----------|-------------|
 | `rjvim9#Sys_info()` | Set `g:os`, `g:root`, `g:dirsep` |
 | `rjvim9#Sys_backupenable()` | Enable timestamped backups in `.vbak/` |
-| `rjvim9#Ft_templates()` | Load file templates on new files |
+| `rjvim9#Ft_templates()` | Load the skeleton for the extension into a new file, skipping binary skeletons |
 | `rjvim9#Ft_sh_init()` | Configure bash syntax folding for sh files |
 | `rjvim9#Fmt_formattext_short()` | Format paragraph to `g:textwidth` |
 | `rjvim9#Fmt_formattext_long()` | Join paragraph into a single long line |
