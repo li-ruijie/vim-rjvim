@@ -404,7 +404,13 @@ export def Ft_templates() # {{
         return
     endif
     var insert = readfile(template)
-    appendbufline(bufnr(), 0, insert)
+    # A new buffer holds one empty line, which the skeleton replaces, so that
+    # no empty line is left below it.
+    if line('$') == 1 && getline(1)->empty()
+        setline(1, insert)
+    else
+        appendbufline(bufnr(), 0, insert)
+    endif
     &l:fileformat = GetFF(template)
 enddef # }}
 # Detect whether a file uses dos (CRLF) or unix (LF) line endings, from the
